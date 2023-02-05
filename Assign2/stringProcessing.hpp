@@ -7,8 +7,8 @@
 #include <glob.h>
 #include<unistd.h>
 #include <sys/stat.h>
-#include <sys/wait.h>
 #include <fcntl.h>
+#include <sys/wait.h>
 using namespace std;
 
 // function to trim a string
@@ -29,5 +29,7 @@ vector<string> getAllCmds(string &segmentCmd);
 // function to get all vectored tokens
 vector<vector<string> > getAllVectoredTokens(string &command);
 
+// function to run a command
+void run_a_command(vector<vector<string> > v,int prev_out,int next_in);
 
 #endif
