@@ -7,6 +7,7 @@
 #include <glob.h>
 #include<unistd.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <fcntl.h>
 using namespace std;
 
