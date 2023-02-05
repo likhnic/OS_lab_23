@@ -1,69 +1,92 @@
 #include "stringProcessing.hpp"
 
-string trim(string &s){
+string trim(string &s)
+{
     string temp = "";
-    int i=0;
-    int j=s.size()-1;
-    for(i=0;i<s.length();++i){
-        if(s[i]!=' ')break;
+    int i = 0;
+    int j = s.size() - 1;
+    for (i = 0; i < s.length(); ++i)
+    {
+        if (s[i] != ' ')
+            break;
     }
-    for(j=s.length()-1;j>=0;--j){
-        if(s[j]!=' ')break;
+    for (j = s.length() - 1; j >= 0; --j)
+    {
+        if (s[j] != ' ')
+            break;
     }
-    return s.substr(i,j-i+1);
+    return s.substr(i, j - i + 1);
 }
 
-vector<vector<string> > getAllTokens(string &command){
+vector<vector<string>> getAllTokens(string &command)
+{
 
-    vector<vector<string> > allPipes;
+    vector<vector<string>> allPipes;
     vector<string> pipe;
     string temp = "";
     int doubleQuotes = 0;
     int singleQuotes = 0;
 
-    for(int i = 0; i < command.length();++i){
-        if(command[i]=='"'){
+    for (int i = 0; i < command.length(); ++i)
+    {
+        if (command[i] == '"')
+        {
             doubleQuotes = !doubleQuotes;
-            temp+=command[i];
+            temp += command[i];
         }
-        else if(command[i]=='\''){
+        else if (command[i] == '\'')
+        {
             singleQuotes = !singleQuotes;
-            temp+=command[i];
+            temp += command[i];
         }
-        else if(command[i]=='\\'){
-            temp+=command[i+1];
+        else if (command[i] == '\\')
+        {
+            temp += command[i + 1];
             i++;
             continue;
         }
-        else if(command[i]==' ' && !doubleQuotes && !singleQuotes){
-            if(trim(temp)!="")pipe.push_back(trim(temp));
+        else if (command[i] == ' ' && !doubleQuotes && !singleQuotes)
+        {
+            if (trim(temp) != "")
+                pipe.push_back(trim(temp));
             temp = "";
         }
-        else if(command[i]=='>' && !doubleQuotes && !singleQuotes){
-            if(trim(temp)!="")pipe.push_back(trim(temp));
+        else if (command[i] == '>' && !doubleQuotes && !singleQuotes)
+        {
+            if (trim(temp) != "")
+                pipe.push_back(trim(temp));
             pipe.push_back(">");
             temp = "";
         }
-        else if(command[i]=='<' && !doubleQuotes && !singleQuotes){
-            if(trim(temp)!="")pipe.push_back(trim(temp));
+        else if (command[i] == '<' && !doubleQuotes && !singleQuotes)
+        {
+            if (trim(temp) != "")
+                pipe.push_back(trim(temp));
             pipe.push_back("<");
             temp = "";
         }
-        else if(command[i]=='&' && !doubleQuotes && !singleQuotes){
-            if(trim(temp)!="")pipe.push_back(trim(temp));
+        else if (command[i] == '&' && !doubleQuotes && !singleQuotes)
+        {
+            if (trim(temp) != "")
+                pipe.push_back(trim(temp));
             pipe.push_back("&");
             temp = "";
         }
-        else if(command[i]=='|' && !doubleQuotes && !singleQuotes){
-            if(trim(temp)!="")pipe.push_back(trim(temp));
+        else if (command[i] == '|' && !doubleQuotes && !singleQuotes)
+        {
+            if (trim(temp) != "")
+                pipe.push_back(trim(temp));
             temp = "";
-            if(pipe.size())allPipes.push_back(pipe);
+            if (pipe.size())
+                allPipes.push_back(pipe);
             pipe.clear();
         }
-        else temp+=command[i];
+        else
+            temp += command[i];
     }
 
-    if(trim(temp)!=""){
+    if (trim(temp) != "")
+    {
         pipe.push_back(trim(temp));
         allPipes.push_back(pipe);
     }
@@ -78,7 +101,8 @@ vector<vector<string> > getAllTokens(string &command){
     return allPipes;
 }
 
-vector<string> getAllPipes(string &command){
+vector<string> getAllPipes(string &command)
+{
 
     vector<string> pipes;
     string temp = "";
@@ -86,28 +110,36 @@ vector<string> getAllPipes(string &command){
     int doubleQuotes = 0;
     int singleQuotes = 0;
 
-    for(int i = 0; i < command.length();++i){
-        if(command[i]=='"'){
+    for (int i = 0; i < command.length(); ++i)
+    {
+        if (command[i] == '"')
+        {
             doubleQuotes = !doubleQuotes;
-            temp+=command[i];
+            temp += command[i];
         }
-        else if(command[i]=='\''){
+        else if (command[i] == '\'')
+        {
             singleQuotes = !singleQuotes;
-            temp+=command[i];
+            temp += command[i];
         }
-        else if(command[i]=='\\'){
-            temp+=command[i+1];
-            i++;
-            continue;
-        }
-        else if(command[i]=='|' && !doubleQuotes && !singleQuotes){
-            if(trim(temp)!="")pipes.push_back(trim(temp));
+        // else if (command[i] == '\\')
+        // {
+        //     temp += command[i + 1];
+        //     i++;
+        //     continue;
+        // }
+        else if (command[i] == '|' && !doubleQuotes && !singleQuotes)
+        {
+            if (trim(temp) != "")
+                pipes.push_back(trim(temp));
             temp = "";
         }
-        else temp+=command[i];
+        else
+            temp += command[i];
     }
 
-    if(trim(temp)!=""){
+    if (trim(temp) != "")
+    {
         pipes.push_back(trim(temp));
     }
 
@@ -119,50 +151,65 @@ vector<string> getAllPipes(string &command){
     return pipes;
 }
 
-vector<string> getAllCmds(string &segmentCmd){
+vector<string> getAllCmds(string &segmentCmd)
+{
 
     int doubleQuotes = 0;
     int singleQuotes = 0;
 
     vector<string> cmds;
-    string temp="";
-    for(int i=0;i<segmentCmd.length();++i){
-        if(segmentCmd[i]=='"'){
+    string temp = "";
+    for (int i = 0; i < segmentCmd.length(); ++i)
+    {
+        if (segmentCmd[i] == '"')
+        {
             doubleQuotes = !doubleQuotes;
-            temp+=segmentCmd[i];
+            temp += segmentCmd[i];
         }
-        else if(segmentCmd[i]=='\''){
+        else if (segmentCmd[i] == '\'')
+        {
             singleQuotes = !singleQuotes;
-            temp+=segmentCmd[i];
+            temp += segmentCmd[i];
         }
-        else if(segmentCmd[i]=='\\'){
+        else if (segmentCmd[i] == '\\')
+        {
             i++;
-            temp+=segmentCmd[i];
+            temp += segmentCmd[i];
             continue;
         }
-        else if(segmentCmd[i]=='&' && !doubleQuotes && !singleQuotes){
-            if(trim(temp)!="")cmds.push_back(trim(temp));
+        else if (segmentCmd[i] == '&' && !doubleQuotes && !singleQuotes)
+        {
+            if (trim(temp) != "")
+                cmds.push_back(trim(temp));
             cmds.push_back("&");
-            temp="";
+            temp = "";
         }
-        else if(segmentCmd[i]=='<' && !doubleQuotes && !singleQuotes){
-            if(trim(temp)!="")cmds.push_back(trim(temp));
+        else if (segmentCmd[i] == '<' && !doubleQuotes && !singleQuotes)
+        {
+            if (trim(temp) != "")
+                cmds.push_back(trim(temp));
             cmds.push_back("<");
-            temp="";
+            temp = "";
         }
-        else if(segmentCmd[i]=='>' && !doubleQuotes && !singleQuotes){
-            if(trim(temp)!="")cmds.push_back(trim(temp));
+        else if (segmentCmd[i] == '>' && !doubleQuotes && !singleQuotes)
+        {
+            if (trim(temp) != "")
+                cmds.push_back(trim(temp));
             cmds.push_back(">");
-            temp="";
+            temp = "";
         }
-        else if(segmentCmd[i]==' ' && !doubleQuotes && !singleQuotes){
-            if(trim(temp)!="")cmds.push_back(trim(temp));
-            temp="";
+        else if (segmentCmd[i] == ' ' && !doubleQuotes && !singleQuotes)
+        {
+            if (trim(temp) != "")
+                cmds.push_back(trim(temp));
+            temp = "";
         }
-        else temp+=segmentCmd[i];
+        else
+            temp += segmentCmd[i];
     }
 
-    if(trim(temp)!="")cmds.push_back(trim(temp));
+    if (trim(temp) != "")
+        cmds.push_back(trim(temp));
 
     // for(auto x:cmds){
     //     cout<<x<<" gap ";
@@ -172,8 +219,8 @@ vector<string> getAllCmds(string &segmentCmd){
     return cmds;
 }
 
-
-void handleRegex(vector<string>&cmd, string &temp){
+void handleRegex(vector<string> &cmd, string &temp)
+{
 
     glob_t glob_result;
     int glob_ret;
@@ -187,84 +234,114 @@ void handleRegex(vector<string>&cmd, string &temp){
     temp = "";
 }
 
-vector<vector<string> >getAllVectoredTokens(string &commands){
+vector<vector<string>> getAllVectoredTokens(string &commands)
+{
 
-    vector<vector<string> > allCmds;
+    vector<vector<string>> allCmds;
     vector<string> cmds;
     string temp = "";
     int doubleQuotes = 0;
     int singleQuotes = 0;
     int tokenContainsReg = 0;
-    
-    for(int i = 0; i < commands.length();++i){
-        if(commands[i]=='"'){
+
+    for (int i = 0; i < commands.length(); ++i)
+    {
+        if (commands[i] == '"')
+        {
             doubleQuotes = !doubleQuotes;
-            temp+=commands[i];
+            temp += commands[i];
         }
-        else if(commands[i]=='\''){
+        else if (commands[i] == '\'')
+        {
             singleQuotes = !singleQuotes;
-            temp+=commands[i];
+            temp += commands[i];
         }
-        else if(commands[i]=='\\'){
-            if(commands[i+1]=='*' || commands[i+1]=='?'){
-                tokenContainsReg = 1;
-            }
-            temp+=commands[i+1];
-            i++;
-            continue;
-        }
-        else if(commands[i]==' ' && !doubleQuotes && !singleQuotes){
-            if(trim(temp)!=""){
-                if(tokenContainsReg)handleRegex(cmds, temp);
-                else cmds.push_back(temp);
+        // else if (commands[i] == '\\')
+        // {
+        //     if (commands[i + 1] == '*' || commands[i + 1] == '?')
+        //     {
+        //         tokenContainsReg = 1;
+        //     }
+        //     temp += commands[i + 1];
+        //     i++;
+        //     continue;
+        // }
+        else if (commands[i] == ' ' && !doubleQuotes && !singleQuotes)
+        {
+            if (trim(temp) != "")
+            {
+                if (tokenContainsReg)
+                    handleRegex(cmds, temp);
+                else
+                    cmds.push_back(temp);
                 tokenContainsReg = 0;
             }
-            temp="";
+            temp = "";
         }
-        else if(commands[i]=='>' && !doubleQuotes && !singleQuotes){
-            if(trim(temp)!=""){
-                if(tokenContainsReg)handleRegex(cmds, temp);
-                else cmds.push_back(temp);
+        else if (commands[i] == '>' && !doubleQuotes && !singleQuotes)
+        {
+            if (trim(temp) != "")
+            {
+                if (tokenContainsReg)
+                    handleRegex(cmds, temp);
+                else
+                    cmds.push_back(temp);
                 tokenContainsReg = 0;
             }
-            if(cmds.size())allCmds.push_back(cmds);
+            if (cmds.size())
+                allCmds.push_back(cmds);
             cmds.clear();
             allCmds.push_back({">"});
-            temp="";
+            temp = "";
         }
-        else if(commands[i]=='<' && !doubleQuotes && !singleQuotes){
-            if(trim(temp)!=""){
-                if(tokenContainsReg)handleRegex(cmds, temp);
-                else cmds.push_back(temp);
+        else if (commands[i] == '<' && !doubleQuotes && !singleQuotes)
+        {
+            if (trim(temp) != "")
+            {
+                if (tokenContainsReg)
+                    handleRegex(cmds, temp);
+                else
+                    cmds.push_back(temp);
                 tokenContainsReg = 0;
             }
-            if(cmds.size())allCmds.push_back(cmds);
+            if (cmds.size())
+                allCmds.push_back(cmds);
             cmds.clear();
             allCmds.push_back({"<"});
-            temp="";
+            temp = "";
         }
-        else if(commands[i]=='&' && !doubleQuotes && !singleQuotes){
-            if(trim(temp)!=""){
-                if(tokenContainsReg)handleRegex(cmds, temp);
-                else cmds.push_back(temp);
+        else if (commands[i] == '&' && !doubleQuotes && !singleQuotes)
+        {
+            if (trim(temp) != "")
+            {
+                if (tokenContainsReg)
+                    handleRegex(cmds, temp);
+                else
+                    cmds.push_back(temp);
                 tokenContainsReg = 0;
             }
-            if(cmds.size())allCmds.push_back(cmds);
+            if (cmds.size())
+                allCmds.push_back(cmds);
             cmds.clear();
             allCmds.push_back({"&"});
-            temp="";
+            temp = "";
         }
-        else{
-            temp+=commands[i];
-            if(commands[i]=='*' || commands[i]=='?'){
+        else
+        {
+            temp += commands[i];
+            if (commands[i] == '*' || commands[i] == '?')
+            {
                 tokenContainsReg = 1;
             }
         }
     }
 
-    if(trim(temp)!=""){
-        if(tokenContainsReg)handleRegex(cmds, temp);
-        else cmds.push_back(temp);
+    if (trim(temp) != "")
+    {
+        if (tokenContainsReg)
+            handleRegex(cmds, temp);
+        else
+            cmds.push_back(temp);
         tokenContainsReg = 0;
         allCmds.push_back(cmds);
     }
@@ -279,83 +356,122 @@ vector<vector<string> >getAllVectoredTokens(string &commands){
     return allCmds;
 }
 
-int check_flags(int read_flag,int write_flag,int background_flag){
-    return !(read_flag|write_flag|background_flag); 
+int check_flags(int read_flag, int write_flag, int background_flag)
+{
+    return !(read_flag | write_flag | background_flag);
 }
 
-void run_a_command(vector<vector<string> > v,int prev_out,int next_in){
-    int write_to_file_flag=0,read_from_file_flag=0,background_process_flag=0,n=0;
-    string write_to_file,read_from_file;
-    for(int i = 0;i<v.size();++i){
-        if(i<v.size()-1){
-            if(v[i][0].compare(">")==0){
-                write_to_file = v[i+1][0];
+void run_a_command(vector<vector<string>> v, int prev_out, int next_in)
+{
+    int write_to_file_flag = 0, read_from_file_flag = 0, background_process_flag = 0, n = 0;
+    string write_to_file, read_from_file;
+    for (int i = 0; i < v.size(); ++i)
+    {
+        if (i < v.size() - 1)
+        {
+            if (v[i][0] == ">")
+            {
+                write_to_file = v[i + 1][0];
                 write_to_file_flag = 1;
-                cout<<write_to_file<<endl;
+                cout << write_to_file << endl;
             }
-            if(v[i][0].compare("<")==0){
-                read_from_file = v[i+1][0];
+            if (v[i][0] == "<")
+            {
+                read_from_file = v[i + 1][0];
                 read_from_file_flag = 1;
-                cout<<read_from_file<<endl;
+                cout << read_from_file << endl;
             }
         }
-        if(v[i][0].compare("&")==0){
+        if (v[i][0]== "&")
+        {
             background_process_flag = 1;
         }
-        if(check_flags(read_from_file_flag,write_to_file_flag,background_process_flag)){
-                n+=v[i].size();
+        if (check_flags(read_from_file_flag, write_to_file_flag, background_process_flag))
+        {
+            n += v[i].size();
         }
     }
-    char* command[n+1];
-    int j  = 0,l=0;
-    for(int i = 0;i<v.size()&&j<=n;++i){
-        if(j==n){
-            command[j++] = NULL;
-        }else{
-            for(int k = 0;k<v[i].size();++k){
-                command[j++] = const_cast<char*>(v[i][k].c_str());
-                // cout<<command[j-1]<<" ";
-            }
+    char *command[n + 1];
+    int j = 0, l = 0;
+    for (int i = 0; i < v.size() && j < n; ++i)
+    {
+        for (int k = 0; k < v[i].size(); ++k)
+        {
+            command[j++] = const_cast<char *>(v[i][k].c_str());
+            // cout<<command[j-1]<<" ";
         }
     }
+    command[n] = NULL;
     int pid = fork();
-    if(pid==0){
-        // writing 
-        if(write_to_file_flag){
+    if (pid == 0)
+    {
+        // writing
+        dup2(prev_out, 0);
+        dup2(next_in, 1);
+        if (prev_out != 0)
+            close(prev_out);
+        if (next_in != 1)
+            close(next_in);
+        // printf("kldsajflk\n");
+
+        if (write_to_file_flag)
+        {
             next_in = open(write_to_file.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0666);
-            dup2(next_in,1);
+            dup2(next_in, 1);
+            close(next_in);
         }
-        //reading
-        if(read_from_file_flag){
-            prev_out = open(read_from_file.c_str(),O_RDONLY,0644);
-            dup2(prev_out,0);
+        // reading
+        if (read_from_file_flag)
+        {
+            prev_out = open(read_from_file.c_str(), O_RDONLY, 0644);
+            dup2(prev_out, 0);
+            close(prev_out);
         }
-        execvp(command[0],command);
-        exit(1); 
-    }else{
-        if(background_process_flag){
-            cout<<"Background process"<<endl;
-        }else{
+        // printf("%s\n", command[0]);
+        for (int i = 0; command[i] != NULL; i++)
+        {
+            printf("%s\n", command[i]);
+        }
+        execvp(command[0], command);
+        exit(1);
+    }
+    else
+    {
+        if (background_process_flag)
+        {
+            cout << "Background process" << endl;
+        }
+        else
+        {
             wait(NULL);
             printf("Waited and child is done\n");
         }
     }
-
-
 }
-
 
 
 // int main(){
 
-//     string command = "cd \"Assign\\ 2\" \'|\' ls -l | grep \"a.out\" > output.txt";
-//     getAllPipes(command);
+//     // string command = "cd \"Assign\\ 2\" \'|\' ls -l | grep \"a.out\" > output.txt";
+//     // getAllPipes(command);
 
-//     string segmentCmd = "ls -la < cmd1 > cmd2 /home/likhith26090/Documents/projects/*.c";
+//     string segmentCmd = "cat k.c > tricky.txt";
 
-//     getAllCmds(segmentCmd);
+//     // getAllCmds(segmentCmd);
+//     int p[2];
+//     if (pipe(p) < 0)
+//         cout << "error\n";
+    
+//     vector<vector<string>> tok = getAllVectoredTokens(segmentCmd);
+//     // int x = 1;
+//     run_a_command(tok, 0, 1);
+//     // char buf[10];
 
-//     getAllVectoredTokens(segmentCmd);
+//     // for (int i = 0; i < 10; i++)
+//     // {
+//     //     read(p[0], buf, 5);
+//     //     cout << buf << endl;
+//     // }
 
 //     return 0;
 // }
