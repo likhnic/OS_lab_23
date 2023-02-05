@@ -28,14 +28,40 @@ void pipe_commands(vector<string> cmds)
     run_a_command(tokens, st_in, st_out);
 }
 
+void executeCommand(char *command){
+
+    string cmd = command;
+    vector<string> toks = getAllPipes(cmd);
+    pipe_commands(toks);
+}
+
 int main()
 {
-    // string command = "cat tricky.txt | sort | grep \"include\"";
-    string command;
-    // command = getline();
-    getline(cin, command);
-    vector<string> cmds = getAllPipes(command);
-    pipe_commands(cmds);
+
+    // Read the history from a file
+    read_history(".history.txt");
+    stifle_history(1000);
+
+    while (1)
+    {
+        // Use readline to get input from the user
+
+        
+        string pwd = get_current_dir_name();
+        pwd+=" $ ";
+        pwd = "bhai shell:"+pwd;
+        char *input = readline(pwd.c_str());
+        if(strcmp(input, "exit")==0) break;
+
+        // Add the input to the history list
+        add_history(input);
+        // Write the history to a file
+        write_history(".history.txt");
+
+        executeCommand(input);
+        // Free the memory used by the input string
+        free(input);
+    }
 
     return 0;
 }
