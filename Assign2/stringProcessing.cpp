@@ -122,12 +122,12 @@ vector<string> getAllPipes(string &command)
             singleQuotes = !singleQuotes;
             temp += command[i];
         }
-        // else if (command[i] == '\\')
-        // {
-        //     temp += command[i + 1];
-        //     i++;
-        //     continue;
-        // }
+        else if (command[i] == '\\')
+        {
+            temp += command[i + 1];
+            i++;
+            continue;
+        }
         else if (command[i] == '|' && !doubleQuotes && !singleQuotes)
         {
             if (trim(temp) != "")
@@ -256,16 +256,16 @@ vector<vector<string>> getAllVectoredTokens(string &commands)
             singleQuotes = !singleQuotes;
             temp += commands[i];
         }
-        // else if (commands[i] == '\\')
-        // {
-        //     if (commands[i + 1] == '*' || commands[i + 1] == '?')
-        //     {
-        //         tokenContainsReg = 1;
-        //     }
-        //     temp += commands[i + 1];
-        //     i++;
-        //     continue;
-        // }
+        else if (commands[i] == '\\')
+        {
+            if (commands[i + 1] == '*' || commands[i + 1] == '?')
+            {
+                tokenContainsReg = 1;
+            }
+            temp += commands[i + 1];
+            i++;
+            continue;
+        }
         else if (commands[i] == ' ' && !doubleQuotes && !singleQuotes)
         {
             if (trim(temp) != "")
@@ -273,7 +273,13 @@ vector<vector<string>> getAllVectoredTokens(string &commands)
                 if (tokenContainsReg)
                     handleRegex(cmds, temp);
                 else
+                {
+                    if ((temp[0] == '\"' && temp.back() == '\"') || (temp[0] == '\'' && temp.back() == '\''))
+                    {
+                        temp = temp.substr(1, temp.size() - 2);
+                    }
                     cmds.push_back(temp);
+                }
                 tokenContainsReg = 0;
             }
             temp = "";
@@ -285,7 +291,13 @@ vector<vector<string>> getAllVectoredTokens(string &commands)
                 if (tokenContainsReg)
                     handleRegex(cmds, temp);
                 else
+                {
+                    if ((temp[0] == '\"' && temp.back() == '\"') || (temp[0] == '\'' && temp.back() == '\''))
+                    {
+                        temp = temp.substr(1, temp.size() - 2);
+                    }
                     cmds.push_back(temp);
+                }
                 tokenContainsReg = 0;
             }
             if (cmds.size())
@@ -301,7 +313,13 @@ vector<vector<string>> getAllVectoredTokens(string &commands)
                 if (tokenContainsReg)
                     handleRegex(cmds, temp);
                 else
+                {
+                    if ((temp[0] == '\"' && temp.back() == '\"') || (temp[0] == '\'' && temp.back() == '\''))
+                    {
+                        temp = temp.substr(1, temp.size() - 2);
+                    }
                     cmds.push_back(temp);
+                }
                 tokenContainsReg = 0;
             }
             if (cmds.size())
@@ -317,7 +335,13 @@ vector<vector<string>> getAllVectoredTokens(string &commands)
                 if (tokenContainsReg)
                     handleRegex(cmds, temp);
                 else
+                {
+                    if ((temp[0] == '\"' && temp.back() == '\"') || (temp[0] == '\'' && temp.back() == '\''))
+                    {
+                        temp = temp.substr(1, temp.size() - 2);
+                    }
                     cmds.push_back(temp);
+                }
                 tokenContainsReg = 0;
             }
             if (cmds.size())
@@ -329,7 +353,7 @@ vector<vector<string>> getAllVectoredTokens(string &commands)
         else
         {
             temp += commands[i];
-            if (commands[i] == '*' || commands[i] == '?')
+            if ((commands[i] == '*' || commands[i] == '?') && !doubleQuotes && !singleQuotes)
             {
                 tokenContainsReg = 1;
             }
@@ -341,7 +365,13 @@ vector<vector<string>> getAllVectoredTokens(string &commands)
         if (tokenContainsReg)
             handleRegex(cmds, temp);
         else
+        {
+            if ((temp[0] == '\"' && temp.back() == '\"') || (temp[0] == '\'' && temp.back() == '\''))
+            {
+                temp = temp.substr(1, temp.size() - 2);
+            }
             cmds.push_back(temp);
+        }
         tokenContainsReg = 0;
         allCmds.push_back(cmds);
     }
@@ -382,7 +412,7 @@ void run_a_command(vector<vector<string>> v, int prev_out, int next_in)
                 cout << read_from_file << endl;
             }
         }
-        if (v[i][0]== "&")
+        if (v[i][0] == "&")
         {
             background_process_flag = 1;
         }
@@ -402,6 +432,19 @@ void run_a_command(vector<vector<string>> v, int prev_out, int next_in)
         }
     }
     command[n] = NULL;
+
+    if (strcmp(command[0], "cd") == 0)
+    {
+        if (command[1] == NULL)
+        {
+            chdir(getenv("HOME"));
+        }
+        else
+        {
+            chdir(command[1]);
+        }
+        return;
+    }
     int pid = fork();
     if (pid == 0)
     {
@@ -432,7 +475,10 @@ void run_a_command(vector<vector<string>> v, int prev_out, int next_in)
         {
             printf("%s\n", command[i]);
         }
-        execvp(command[0], command);
+        if (command[0] == NULL)
+            exit(0);
+        else
+            execvp(command[0], command);
         exit(1);
     }
     else
@@ -448,30 +494,3 @@ void run_a_command(vector<vector<string>> v, int prev_out, int next_in)
         }
     }
 }
-
-
-// int main(){
-
-//     // string command = "cd \"Assign\\ 2\" \'|\' ls -l | grep \"a.out\" > output.txt";
-//     // getAllPipes(command);
-
-//     string segmentCmd = "cat k.c > tricky.txt";
-
-//     // getAllCmds(segmentCmd);
-//     int p[2];
-//     if (pipe(p) < 0)
-//         cout << "error\n";
-    
-//     vector<vector<string>> tok = getAllVectoredTokens(segmentCmd);
-//     // int x = 1;
-//     run_a_command(tok, 0, 1);
-//     // char buf[10];
-
-//     // for (int i = 0; i < 10; i++)
-//     // {
-//     //     read(p[0], buf, 5);
-//     //     cout << buf << endl;
-//     // }
-
-//     return 0;
-// }
