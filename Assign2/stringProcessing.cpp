@@ -279,70 +279,7 @@ vector<vector<string> >getAllVectoredTokens(string &commands){
     return allCmds;
 }
 
-int check_flags(int read_flag,int write_flag,int background_flag){
-    return !(read_flag|write_flag|background_flag); 
-}
 
-void run_a_command(vector<vector<string> > v,int prev_out,int next_in){
-    int write_to_file_flag=0,read_from_file_flag=0,background_process_flag=0,n=0;
-    string write_to_file,read_from_file;
-    for(int i = 0;i<v.size();++i){
-        if(i<v.size()-1){
-            if(v[i][0].compare(">")==0){
-                write_to_file = v[i+1][0];
-                write_to_file_flag = 1;
-                cout<<write_to_file<<endl;
-            }
-            if(v[i][0].compare("<")==0){
-                read_from_file = v[i+1][0];
-                read_from_file_flag = 1;
-                cout<<read_from_file<<endl;
-            }
-        }
-        if(v[i][0].compare("&")==0){
-            background_process_flag = 1;
-        }
-        if(check_flags(read_from_file_flag,write_to_file_flag,background_process_flag)){
-                n+=v[i].size();
-        }
-    }
-    char* command[n+1];
-    int j  = 0,l=0;
-    for(int i = 0;i<v.size()&&j<=n;++i){
-        if(j==n){
-            command[j++] = NULL;
-        }else{
-            for(int k = 0;k<v[i].size();++k){
-                command[j++] = const_cast<char*>(v[i][k].c_str());
-                // cout<<command[j-1]<<" ";
-            }
-        }
-    }
-    int pid = fork();
-    if(pid==0){
-        // writing 
-        if(write_to_file_flag){
-            next_in = open(write_to_file.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0666);
-            dup2(next_in,1);
-        }
-        //reading
-        if(read_from_file_flag){
-            prev_out = open(read_from_file.c_str(),O_RDONLY,0644);
-            dup2(prev_out,0);
-        }
-        execvp(command[0],command);
-        exit(1); 
-    }else{
-        if(background_process_flag){
-            cout<<"Background process"<<endl;
-        }else{
-            wait(NULL);
-            printf("Waited and child is done\n");
-        }
-    }
-
-
-}
 // int main(){
 
 //     string command = "cd \"Assign\\ 2\" \'|\' ls -l | grep \"a.out\" > output.txt";
