@@ -1,7 +1,7 @@
 #include "stringProcessing.hpp"
 
 // this is to execute the command
-void run_a_command(vector<vector<string> > v,int prev_out,int next_in);
+// void run_a_command(vector<vector<string> > v,int prev_out,int next_in);
 
 // executing each command that are piped
 void pipe_commands(vector<string> cmds)
@@ -26,4 +26,16 @@ void pipe_commands(vector<string> cmds)
 
     vector<vector<string>> tokens = getAllVectoredTokens(cmds[n-1]);
     run_a_command(tokens, st_in, st_out);
+}
+
+int main()
+{
+    // string command = "cat tricky.txt | sort | grep \"include\"";
+    string command;
+    // command = getline();
+    getline(cin, command);
+    vector<string> cmds = getAllPipes(command);
+    pipe_commands(cmds);
+
+    return 0;
 }
