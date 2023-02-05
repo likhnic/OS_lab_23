@@ -172,36 +172,6 @@ vector<string> getAllCmds(string &segmentCmd){
     return cmds;
 }
 
-/*
-#include <unistd.h>
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <glob.h>
-
-int main(int argc, char *argv[])
-{
-    glob_t glob_result;
-    int glob_ret;
-    glob_ret = glob("k.c", 0, NULL, &glob_result);
-
-    // char *arv[2] = {"gedit"};
-    char **arv;
-    int n = glob_result.gl_pathc;
-    // arv+1 = glob_result.gl_pathv;
-    arv = (char **)malloc((n+2)*sizeof(char *));
-    arv[0] = "ls -la";
-    int cnt = 2;
-    for (int i = 0; i < n; i++)
-    {
-        arv[i+1] = glob_result.gl_pathv[i];
-    }
-    arv[n+1] = NULL;
-    execvp(arv[0], arv);
-    return 0;
-}
-*/
 
 void handleRegex(vector<string>&cmd, string &temp){
 
