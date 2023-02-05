@@ -5,10 +5,15 @@
 
 #include <bits/stdc++.h>
 #include <glob.h>
-#include<unistd.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/wait.h>
+#include <string>
+#include <stdio.h>
+#include <stdlib.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 using namespace std;
 
 // function to trim a string
