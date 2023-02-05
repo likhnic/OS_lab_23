@@ -262,7 +262,11 @@ vector<vector<string>> getAllVectoredTokens(string &commands)
             {
                 tokenContainsReg = 1;
             }
-            temp += commands[i + 1];
+            if (commands[i+1] != ' ')
+            {
+                temp += commands[i];
+                continue;
+            }
             i++;
             continue;
         }
@@ -403,13 +407,13 @@ void run_a_command(vector<vector<string>> v, int prev_out, int next_in)
             {
                 write_to_file = v[i + 1][0];
                 write_to_file_flag = 1;
-                cout << write_to_file << endl;
+                // cout << write_to_file << endl;
             }
             if (v[i][0] == "<")
             {
                 read_from_file = v[i + 1][0];
                 read_from_file_flag = 1;
-                cout << read_from_file << endl;
+                // cout << read_from_file << endl;
             }
         }
         if (v[i][0] == "&")
@@ -471,10 +475,10 @@ void run_a_command(vector<vector<string>> v, int prev_out, int next_in)
             close(prev_out);
         }
         // printf("%s\n", command[0]);
-        for (int i = 0; command[i] != NULL; i++)
-        {
-            printf("%s\n", command[i]);
-        }
+        // for (int i = 0; command[i] != NULL; i++)
+        // {
+        //     printf("%s\n", command[i]);
+        // }
         if (command[0] == NULL)
             exit(0);
         else
@@ -485,12 +489,12 @@ void run_a_command(vector<vector<string>> v, int prev_out, int next_in)
     {
         if (background_process_flag)
         {
-            cout << "Background process" << endl;
+            // cout << "Background process" << endl;
         }
         else
         {
             wait(NULL);
-            printf("Waited and child is done\n");
+            // printf("Waited and child is done\n");
         }
     }
 }
