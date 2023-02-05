@@ -1,7 +1,7 @@
 #include "stringProcessing.hpp"
 
 // this is to execute the command
-void execute_command(vector<vector<string>> command, int in, int out);
+void run_a_command(vector<vector<string> > v,int prev_out,int next_in);
 
 // executing each command that are piped
 void pipe_commands(vector<string> cmds)
@@ -19,11 +19,11 @@ void pipe_commands(vector<string> cmds)
         }
 
         vector<vector<string>> tokens = getAllVectoredTokens(cmds[i]); // tokenisation of command
-        execute_command(tokens, st_in, fd[1]); // executing the command
+        run_a_command(tokens, st_in, fd[1]); // executing the command
         st_in = fd[0]; // updating the input file descriptor
         close(fd[1]); // closing old pipe
     }
 
     vector<vector<string>> tokens = getAllVectoredTokens(cmds[n-1]);
-    execute_command(tokens, st_in, st_out);
+    run_a_command(tokens, st_in, st_out);
 }
