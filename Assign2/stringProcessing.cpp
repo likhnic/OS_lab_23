@@ -1,4 +1,6 @@
 #include "stringProcessing.hpp"
+#include "signalHandler.hpp"
+
 
 string trim(string &s)
 {
@@ -262,11 +264,7 @@ vector<vector<string>> getAllVectoredTokens(string &commands)
             {
                 tokenContainsReg = 1;
             }
-            if (commands[i+1] != ' ')
-            {
-                temp += commands[i];
-                continue;
-            }
+            temp += commands[i + 1];
             i++;
             continue;
         }
@@ -449,6 +447,10 @@ void run_a_command(vector<vector<string>> v, int prev_out, int next_in)
         }
         return;
     }
+    
+    // signal(SIGTTOU, SIG_IGN);
+    // signal(SIGCHLD, reapProcess);
+
     int pid = fork();
     if (pid == 0)
     {
@@ -485,16 +487,5 @@ void run_a_command(vector<vector<string>> v, int prev_out, int next_in)
             execvp(command[0], command);
         exit(1);
     }
-    else
-    {
-        if (background_process_flag)
-        {
-            // cout << "Background process" << endl;
-        }
-        else
-        {
-            wait(NULL);
-            // printf("Waited and child is done\n");
-        }
-    }
+
 }
