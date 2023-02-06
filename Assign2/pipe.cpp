@@ -21,11 +21,14 @@ void pipe_commands(vector<string> cmds)
         vector<vector<string>> tokens = getAllVectoredTokens(cmds[i]); // tokenisation of command
         run_a_command(tokens, st_in, fd[1]); // executing the command
         st_in = fd[0]; // updating the input file descriptor
-        close(fd[1]); // closing old pipe
+        close(fd[1]); // closing old pipe   
     }
 
     vector<vector<string>> tokens = getAllVectoredTokens(cmds[n-1]);
     run_a_command(tokens, st_in, st_out);
+    if(cmds.back().back()!='&'){
+        wait(NULL);
+    }
 }
 
 void executeCommand(char *command){
