@@ -1,3 +1,4 @@
+# !/bin/bash
 touch main.csv;
 > temp.csv;
 if [ ! -s main.csv ]; then
@@ -53,6 +54,7 @@ Name
 .B test.sh
 Script essentially manipulates a csv file.
 The script accepts 4 arguments Date(dd-mm-yy), Category, Amount, Name and adds the record into the main.csv file.
+
 .SH OPTIONS
 .TP
 .BI \-c \" Category\"

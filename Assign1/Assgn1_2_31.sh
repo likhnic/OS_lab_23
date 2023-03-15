@@ -1,5 +1,5 @@
 fruits=`cat fruits.txt`
-for line in `cat $1`;
+while read str
 do 
-    [[ $line =~ ^[a-zA-Z][a-zA-Z0-9]{4,18}[0-9]+[a-zA-Z0-9]*$ ]]&&echo $line|grep -ivqE "${fruits[*]}"&&echo YES||echo NO
-done > validation_results.txt
+    ((${#str}>4&&${#str}<21))&&[[ $str =~ ^[a-zA-Z][a-zA-Z0-9]*[0-9][a-zA-Z0-9]*$ ]]&&echo $str|grep -ivqE "${fruits[*]}"&&echo YES||echo NO
+done < $1 > validation_results.txt

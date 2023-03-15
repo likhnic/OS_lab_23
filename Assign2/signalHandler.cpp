@@ -6,14 +6,34 @@ using namespace std;
 void reapProcess(int sig)
 {
     // need to write this after pipeline has count of current process
-    pid_t currpid;
+    pid_t currpid; int status;
     while(true)
     {
-        currpid = waitpid(-1, NULL, WNOHANG);
+        currpid = waitpid(-1, &status, WNOHANG | WUNTRACED | WCONTINUED);
         if(currpid <= 0)         
         break;
-        if(currpid == foregroundPID)
-        foregroundPID = 0;
+        Pipes* currpipe = allPipes[pipeIndexMap[currpid]];
+        
+        if(WIFSIGNALED(status) || WIFEXITED(status))  // Terminated due to interrupt or normal exit
+        {
+            currpipe->countActive--;
+        }
+        else if(WIFSTOPPED(status))
+        {
+            currpipe->countActive--;
+        }
+        else if(WIFCONTINUED(status))
+        { 
+            currpipe->countActive++;
+        }
+        if(currpipe->pgrpID == foregroundPID && !WIFCONTINUED(status) && currpipe->countActive == 0)
+        {
+            foregroundPID = 0;
+            // To allow background process due to ctrl+Z to continue in background
+            if(WIFSTOPPED(status))                   
+            // killpg(currpipe->pgrpID, SIGCONT);
+            currpipe->isBackground = true;
+        }
     }
 }
 
@@ -21,9 +41,24 @@ void reapProcess(int sig)
 void handle_ctrl_CZ(int sig)                            
 {
     if(sig == SIGINT)
-    pressedCtrlC = true;
+    {
+        if(getpid() != rootpid)
+        kill(-getpgrp(), SIGINT);
+        else
+        {
+            printf("\n");
+            rl_reset_line_state();
+            rl_replace_line("",0);
+            rl_redisplay();
+        }
+    }
     if(sig == SIGTSTP)
-    pressedCtrlZ = true;
+    {
+        printf("\n");
+        rl_reset_line_state();
+        rl_replace_line("",0);
+        rl_redisplay();
+    }
 }
 
 

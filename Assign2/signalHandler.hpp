@@ -1,13 +1,12 @@
+// header file for signalHandlers.cpp
+
 #ifndef __SIGNAL_HANDLERS_H
 #define __SIGNAL_HANDLERS_H
 
-#include <sys/inotify.h>
-#include <sys/types.h>
 #include <sys/wait.h>
-#include <unistd.h>
-
-extern bool pressedCtrlC, pressedCtrlZ;
-extern pid_t foregroundPID;
+#include <map>
+#include "pipeline.hpp"
+#include <readline/readline.h>
 
 void reapProcess(int sig);
 void handle_ctrl_CZ(int sig) ;
@@ -16,4 +15,5 @@ void blockSIGCHLD() ;
 void unblockSIGCHLD();
 void waitForForegroundProcess(pid_t pid);
 
+extern const pid_t rootpid;
 #endif

@@ -1,5 +1,15 @@
-fruits=`cat fruits.txt`
-while read str
+numbers=`cat $1 | rev`
+lcm=1
+for num in $numbers
 do 
-    ((${#str}>4&&${#str}<21))&&[[ $str =~ ^[a-zA-Z][a-zA-Z0-9]*[0-9][a-zA-Z0-9]*$ ]]&&! echo $str|grep -iqE "${fruits[*],,}"&&echo YES||echo NO
-done < $1 > validation_results.txt
+    a=$lcm
+    b=$num
+    while((10#$b>0))
+    do 
+        temp=$b
+        b=$((10#$a%10#$b))
+        a=$temp
+    done
+    lcm=$((lcm*(10#$num/10#$a)))
+done
+echo $lcm
