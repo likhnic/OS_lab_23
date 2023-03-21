@@ -12,9 +12,7 @@ void *cleaningStaff(void *arg){
         // cleaning staff will clean first uncleaned rooom
         if(!doneRooms.empty()){
             Room *room = doneRooms.front();
-            sem_wait(&prints);
             printf("Cleaning staff %d will clean till %d seconds\n", cid, room->time_used);
-            sem_wait(&prints);
             doneRooms.pop();
             // cleaning staff will clean the room
             sem_post(&cleaner_sem);

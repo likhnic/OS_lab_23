@@ -7,7 +7,7 @@ void *guest(void *arg){
 
     while(1){
         // sleep before requesting a room
-        int time = rand()%11+10;
+        int time = rand()%11+2;
         sleep(time);
 
         // guest will take a free room if exists, else 
@@ -15,7 +15,10 @@ void *guest(void *arg){
         Room *room;
         while(1){
             sem_wait(&room_sem);
-
+            if(guests_entered == 2*n){
+                sem_post(&room_sem);
+                continue;
+            }
             if(!freeRooms.empty()){
                 room = freeRooms.front();
                 freeRooms.pop();
@@ -48,7 +51,7 @@ void *guest(void *arg){
                 guests_entered++;
                 room->guest_thread = pthread_self();
             }
-            time = rand()%21 + 10;
+            time = rand()%21 + 2;
             room->time_used += time;
             printf("Guest with priority %d is using room for %d seconds\n", priority, time);
             sem_post(&room_sem);
@@ -65,13 +68,12 @@ void *guest(void *arg){
 
         int sig = sigtimedwait(&mask, NULL, &timeout);
 
-
         sem_wait(&room_sem);
         printf("Guest with priority %d is leaving room\n", priority);
+        
         if(room->guests_used != 2)freeRooms.push(room);
-        else {
-            doneRooms.push(room);
-        }
+        else doneRooms.push(room);
+
         if(doneRooms.size() == n){
             
             // now time to clean

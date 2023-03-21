@@ -1,4 +1,4 @@
-run: main.o guest.o cleaningStaff.o
+main: main.o guest.o cleaningStaff.o
 	g++ guest.o cleaningStaff.o main.o -lpthread -o main
 
 main.o: main.cpp main.hpp
