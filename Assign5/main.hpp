@@ -15,11 +15,8 @@
 using namespace std;
 
 extern int guests_entered;
-extern sem_t exculsive_cleaner; // mutex
 extern sem_t cleaner_sem, room_sem;
-extern int cleaners;
 extern pthread_t *guests, *cleaningStaffs;
-extern sem_t prints;
 
 extern int x, y, n;
 
@@ -33,7 +30,6 @@ public:
     Room(int priority = -1, int guests_used = 0, int time_used = 0) : guests_used(guests_used), time_used(time_used), priority(priority) {}
 };
 
-extern Room *room;
 extern void *guest(void *arg);
 extern void *cleaningStaff(void *arg);
 

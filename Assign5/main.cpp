@@ -1,14 +1,12 @@
 #include "main.hpp"
 
 int guests_entered = 0;
-int cleaners = 0;
 int x, y, n;
-Room *room;
 queue<Room *> freeRooms;
 set<pair<int, Room *>> occupiedRooms;
 queue<Room *> doneRooms;
 
-sem_t cleaner_sem, room_sem, prints;
+sem_t cleaner_sem, room_sem;
 pthread_t *guests, *cleaningStaffs;
 
 int main()
@@ -30,7 +28,6 @@ int main()
     // init semaphores
     sem_init(&room_sem, 0, 1);
     sem_init(&cleaner_sem, 0, 0);
-    sem_init(&prints, 0, 1);
     for (int i = 0; i < n; ++i)
     {
         Room *room = new Room();
@@ -60,5 +57,4 @@ int main()
     // destroy semaphores
     sem_destroy(&room_sem);
     sem_destroy(&cleaner_sem);
-    sem_destroy(&prints);
 }
