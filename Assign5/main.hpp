@@ -9,14 +9,17 @@
 #include <unistd.h>
 #include <queue>
 #include <time.h>
+#include <signal.h>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
-extern int guests_entered = 0, guests_done = 0;
+extern int guests_entered;
 extern sem_t exculsive_cleaner; // mutex
-extern sem_t guest_entered_sem, guest_cleaner_sem;
-extern sem_t cleaner_sem, guest_sem, room_sem;
-extern int cleaners = 0;
+extern sem_t cleaner_sem, room_sem;
+extern int cleaners;
 extern pthread_t *guests, *cleaningStaffs;
+extern sem_t prints;
 
 extern int x, y, n;
 
@@ -26,6 +29,7 @@ public:
     int guests_used; // number of guests used
     int time_used; // total time used
     int priority; // priority of the guest staying in the room
+    pthread_t guest_thread; // thread id of the guest staying in the room
     Room(int priority = -1, int guests_used = 0, int time_used = 0) : guests_used(guests_used), time_used(time_used), priority(priority) {}
 };
 

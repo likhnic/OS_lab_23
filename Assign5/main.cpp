@@ -1,16 +1,15 @@
 #include "main.hpp"
 
-int guests_entered = 0, guests_done = 0;
-sem_t exculsive_cleaner; // mutex
-sem_t guest_entered_sem, guest_cleaner_sem;
-sem_t cleaner_sem, guest_sem, room_sem;
+int guests_entered = 0;
 int cleaners = 0;
-pthread_t *guests, *cleaningStaffs;
-Room *room;
 int x, y, n;
+Room *room;
 queue<Room *> freeRooms;
 set<pair<int, Room *>> occupiedRooms;
 queue<Room *> doneRooms;
+
+sem_t cleaner_sem, room_sem, prints;
+pthread_t *guests, *cleaningStaffs;
 
 int main()
 {
@@ -21,21 +20,24 @@ int main()
     guests = new pthread_t[y];
     cleaningStaffs = new pthread_t[x];
 
-    unordered_set<int> priorities;
-    while (priorities.size() < y)
-    {
-        priorities.insert(rand() % 100);
+    vector<int> numbers;
+    for (int i = 1; i <= y; i++) {
+        numbers.push_back(i);
     }
+    std::random_shuffle(numbers.begin(), numbers.end());
 
     // init semaphores
     sem_init(&room_sem, 0, 1);
     sem_init(&cleaner_sem, 0, 0);
+    sem_init(&prints, 0, 1);
+    for(int i=0;i<n;++i){
+        Room *room = new Room();
+        freeRooms.push(room);
+    }
 
     for (int i = 0; i < y; ++i)
     {
-        int k = *(priorities.begin());
-        priorities.erase(priorities.begin());
-        pthread_create(&guests[i], NULL, guest, (void *)&k);
+        pthread_create(&guests[i], NULL, guest, (void *)&numbers[i]);
     }
 
     for (int i = 0; i < x; ++i)
@@ -56,4 +58,5 @@ int main()
     // destroy semaphores
     sem_destroy(&room_sem);
     sem_destroy(&cleaner_sem);
+    sem_destroy(&prints);
 }
