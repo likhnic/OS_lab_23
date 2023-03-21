@@ -7,19 +7,14 @@ void *guest(void *arg){
 
     while(1){
         // sleep before requesting a room
-        int time = rand()%11+2;
-        // sem_wait(&prints);
-        // printf("Guest %d is sleeping for %d seconds\n", priority, time);
-        // sem_post(&prints);
+        int time = rand()%11+10;
         sleep(time);
 
         // guest will take a free room if exists, else 
         // he will take a room which has least priority
         Room *room;
         while(1){
-            // printf("OK\n");
             sem_wait(&room_sem);
-            // printf("OK\n");
 
             if(!freeRooms.empty()){
                 room = freeRooms.front();
@@ -46,18 +41,16 @@ void *guest(void *arg){
                 room = it->second;
                 // signal SIGUSR1 to the guest thread which is using the room
                 pthread_kill(room->guest_thread, SIGUSR1);
-                printf("Guest %d got kicked out by guest %d\n", room->priority, priority);
+                printf("Guest with priority %d got kicked out by guest with priority %d\n", room->priority, priority);
                 occupiedRooms.erase(it);
                 room->guests_used++;
                 room->priority = priority;
                 guests_entered++;
                 room->guest_thread = pthread_self();
             }
-            time = rand()%21 + 2;
+            time = rand()%21 + 10;
             room->time_used += time;
-            // sem_wait(&prints);
-            printf("Guest %d is using room for %d seconds\n", priority, time);
-            // sem_post(&prints);
+            printf("Guest with priority %d is using room for %d seconds\n", priority, time);
             sem_post(&room_sem);
             break;
         }
@@ -74,13 +67,10 @@ void *guest(void *arg){
 
 
         sem_wait(&room_sem);
-        // sem_wait(&prints);
-        printf("Guest %d is leaving room\n", priority);
-        // sem_post(&prints);
+        printf("Guest with priority %d is leaving room\n", priority);
         if(room->guests_used != 2)freeRooms.push(room);
         else {
             doneRooms.push(room);
-            printf("Room %d need to be cleaned\n", room->priority);
         }
         if(doneRooms.size() == n){
             
