@@ -16,6 +16,7 @@ extern sem_t exculsive_cleaner; // mutex
 extern sem_t guest_entered_sem, guest_cleaner_sem;
 extern sem_t cleaner_sem, guest_sem, room_sem;
 extern int cleaners = 0;
+extern pthread_t *guests, *cleaningStaffs;
 
 extern int x, y, n;
 
