@@ -21,13 +21,20 @@ int main()
     guests = new pthread_t[y];
     cleaningStaffs = new pthread_t[x];
 
+    unordered_set<int> priorities;
+    while (priorities.size() < y)
+    {
+        priorities.insert(rand() % 100);
+    }
+
     // init semaphores
     sem_init(&room_sem, 0, 1);
     sem_init(&cleaner_sem, 0, 0);
 
     for (int i = 0; i < y; ++i)
     {
-        int k = rand() % y;
+        int k = *(priorities.begin());
+        priorities.erase(priorities.begin());
         pthread_create(&guests[i], NULL, guest, (void *)&k);
     }
 
