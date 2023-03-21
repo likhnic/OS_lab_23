@@ -1,11 +1,25 @@
 #include "main.hpp"
 
+int guests_entered = 0, guests_done = 0;
+sem_t exculsive_cleaner; // mutex
+sem_t guest_entered_sem, guest_cleaner_sem;
+sem_t cleaner_sem, guest_sem, room_sem;
+int cleaners = 0;
+pthread_t *guests, *cleaningStaffs;
+Room *room;
+int x, y, n;
+queue<Room *> freeRooms;
+set<pair<int, Room *>> occupiedRooms;
+queue<Room *> doneRooms;
+
 int main()
 {
     srand(time(NULL));
     cout << "Enter x, y, n: ";
     cin >> x >> y >> n;
-    pthread_t guests[y], cleaningStaffs[x];
+    
+    guests = new pthread_t[y];
+    cleaningStaffs = new pthread_t[x];
 
     // init semaphores
     sem_init(&room_sem, 0, 1);
