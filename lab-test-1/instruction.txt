@@ -1,0 +1,11 @@
+### problem 1
+bash problem1.sh
+give x then y then m as input
+
+### problem 2
+gcc -Wall problem2.c -o p2
+./p2
+
+### problem 3
+gcc -Wall problem3.c -lpthread -o p3
+./p3
